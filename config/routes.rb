@@ -15,4 +15,6 @@ Rails.application.routes.draw do
     resources :stories, only: [ :create, :show ]
     resources :story_recommendations, only: [ :create ]
   end
+
+  get "ping" => "application#ping"
 end
