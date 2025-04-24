@@ -34,8 +34,15 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem "dotenv", groups: [ :development, :test ]
+gem "geocoder"
 
-gem "wikipedia-client"
+gem "groq"
+gem "ruby-openai"
+gem "pry-rails"
+gem "elevenlabs-ruby"
+gem "rack-cors"
+gem "parallel"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
