@@ -65,3 +65,13 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+group :production do
+  gem "pg", "~> 1.5"
+end
+
+gem "dockerfile-rails", ">= 1.7", group: :development
+
+gem "litestream", "~> 0.12.0"
+
+gem "aws-sdk-s3", "~> 1.183", require: false
