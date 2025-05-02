@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_24_034733) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_223324) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -49,9 +49,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_034733) do
     t.string "county"
     t.string "state"
     t.json "categories", default: []
+    t.string "suburb"
     t.index ["city"], name: "index_stories_on_city"
     t.index ["county"], name: "index_stories_on_county"
     t.index ["state"], name: "index_stories_on_state"
+    t.index ["suburb"], name: "index_stories_on_suburb"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

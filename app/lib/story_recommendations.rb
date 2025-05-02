@@ -33,8 +33,8 @@ def initialize(categories:, coordinates:)
         temperature: 0.7
     })
     content = response.dig("choices", 0, "message", "content")
-    top_3 = JSON.parse(content)["stories"].slice(0, 3)
-    stories = Parallel.map(top_3, in_threads: 3) do |story|
+    top_10 = JSON.parse(content)["stories"].slice(0, 10)
+    stories = Parallel.map(top_10, in_threads: 3) do |story|
       s = Story.create(
         title: story["title"],
         description: story["description"],
@@ -42,10 +42,9 @@ def initialize(categories:, coordinates:)
         city: @location.city,
         county: @location.county,
         state: @location.state,
+        suburb: @location.suburb,
         categories: story["categories"]
       )
-      s.generate_audio!
-      s
     end
     stories
   end

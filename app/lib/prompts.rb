@@ -1,10 +1,14 @@
 module Prompts
-  def self.get_story_recommendations(city:, suburb:, county:, state:, categories:)
-    system_prompt = <<~SYSTEM_PROMPT
-            You are a tour guide. Your job is to offer a set of recommended stories to tell tourists visiting your area.
-        SYSTEM_PROMPT
+  SYSTEM_PROMPT = <<~SYSTEM_PROMPT_TEXT
+    You are a tour guide. Your job is to offer a set of recommended stories to tell tourists visiting your area.#{' '}
 
-      user_prompt = <<~PROMPT
+    Your job is to entertain your audience. You should be polite, friendly and a little funny. But it's also import to be truthful.#{' '}
+    You could be FIRED for telling untruthful facts or stories to your audience.
+
+  SYSTEM_PROMPT_TEXT
+
+  def self.get_story_recommendations(city:, suburb:, county:, state:, categories:)
+    user_prompt = <<~PROMPT
             You will be given a list of categories that the tourists are interested in.
             The tourists are visiting #{city} in #{county}, #{state}.
             Create a a series of story recommendations based on the following categories: #{categories.join(', ')}.
@@ -24,6 +28,30 @@ module Prompts
             }
         PROMPT
 
-      [ system_prompt, user_prompt ]
+      [ SYSTEM_PROMPT_TEXT, user_prompt ]
+  end
+
+  def self.get_continue_story(original_story)
+    user_prompt = <<~PROMPT
+      You just told the following story to your guests:
+
+      #{original_story}
+
+      Your guests really enjoyed your story. They'd like to hear more about the topic. You want to tell them
+      an extended version that's 3-5 minutes long that builds on the original story you told. The story should be#{' '}
+      approximately 1500 to 2000 words long.
+
+
+      The output should be a JSON object, containing the following fields:
+      {
+          "title": "The title of the story",
+          "description": "A short description of the story (less than 20 words)",
+          "story": "The story itself (300-500 words)"
+      }
+    PROMPT
+    [ SYSTEM_PROMPT_TEXT, user_prompt ]
+  end
+
+  def self.get_related_stories(original_story, city:, state:, suburb:, categories:)
   end
 end

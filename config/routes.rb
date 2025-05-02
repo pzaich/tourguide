@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :api do
-    resources :stories, only: [ :create, :show, :index ]
+    resources :stories, only: [ :create, :show, :index ] do
+      member do
+        post "play"
+      end
+    end
     resources :story_recommendations, only: [ :create ]
   end
 

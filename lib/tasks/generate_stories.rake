@@ -6,9 +6,9 @@ namespace :stories do
       { name: "San Diego", coordinates: "32.7157,-117.1611" },
       { name: "La Jolla", coordinates: "32.8328,-117.2713" }
     ]
-    
-    categories = ["History", "Sports"]
-    
+
+    categories = [ "History", "Sports" ]
+
     cities.each do |city|
       puts "Generating stories for #{city[:name]}..."
       begin
@@ -22,4 +22,4 @@ namespace :stories do
       end
     end
   end
-end 
+end

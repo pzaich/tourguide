@@ -3,7 +3,7 @@ class Api::StoriesController < ApplicationController
     location = Geocoder.search(params[:coordinates]).first
       stories = Story.where(city: location.city, county: location.county, state: location.state)
       params[:categories].each do |category|
-        stories.where('categories LIKE ?', category)
+        stories.where("categories LIKE ?", category)
       end
       render json: stories.map { |story| serialize_story(story) }
   end
@@ -17,6 +17,12 @@ class Api::StoriesController < ApplicationController
       story = Story.create(story_params)
         story.generate_audio!
         render json: serialize_story(story)
+    end
+
+    def play
+      story = Story.find(params[:id])
+      story.generate_audio! if story.story_audio.blank?
+      render json: serialize_story(story)
     end
 
     private
