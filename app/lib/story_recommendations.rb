@@ -6,7 +6,7 @@ class StoryRecommendations
   end
 
 def initialize(categories:, coordinates:)
-    @location = Geocoder.search(coordinates).first
+  @location = Geocoder.search(coordinates).first
     @categories = categories
   end
 
