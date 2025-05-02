@@ -19,7 +19,8 @@ def initialize(categories:, coordinates:)
       city: @location.city,
       county: @location.county,
       state: @location.state,
-      categories: @categories
+      categories: @categories,
+      suburb: @location.suburb
     )
     response = client.chat(
       parameters: {
