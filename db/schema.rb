@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_02_223324) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_05_015517) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -50,8 +50,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_223324) do
     t.string "state"
     t.json "categories", default: []
     t.string "suburb"
+    t.string "model"
     t.index ["city"], name: "index_stories_on_city"
     t.index ["county"], name: "index_stories_on_county"
+    t.index ["model"], name: "index_stories_on_model"
     t.index ["state"], name: "index_stories_on_state"
     t.index ["suburb"], name: "index_stories_on_suburb"
   end

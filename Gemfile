@@ -39,6 +39,7 @@ gem "geocoder"
 
 gem "groq"
 gem "ruby-openai"
+gem "ruby-anthropic"
 gem "pry-rails"
 gem "elevenlabs-ruby"
 gem "rack-cors"

@@ -6,7 +6,7 @@ class Story < ApplicationRecord
     VOICE_ID = "56AoDkrOh6qfVPDXZ7Pt"
 
     def audio_url
-      url_for(story_audio)
+      url_for(story_audio) if story_audio.present?
     end
 
     def generate_audio!

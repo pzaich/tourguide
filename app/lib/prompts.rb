@@ -16,19 +16,25 @@ module Prompts
             Your job hinges on good story telling. Each story should be engaging, informative, and casual as if you were telling the story to a friend.
             Start by looking for stories that are relevant to the city, then broaden your search to include stories that are relevant to the county and surrounding cities.
 
-            If the #{city} if larger in population than 300,000 people, neighborhoods in the city are sometimes of interest.
+            If the city is larger in population than 300,000 people, neighborhoods in the city are sometimes of interest.
             You can share stories specific to the neighborhood as well. You are currently near the neighborhood: #{suburb}.
 
-            The output should be a JSON array of objects, each containing the following fields:
-            {
-                "title": "The title of the story",
-                "description": "A short description of the story (less than 20 words)",
-                "categories": ["The categories that the story is about"]. Must be one of the following: #{categories.join(', ')},
-                "story": "The story itself (300-500 words)"
-            }
+            The output should be a validJSON array of objects, each containing the following fields.
+            #{get_story_recommendations_json_schema(categories)}
         PROMPT
 
-      [ SYSTEM_PROMPT_TEXT, user_prompt ]
+      [ SYSTEM_PROMPT, user_prompt ]
+  end
+
+  def self.get_story_recommendations_json_schema(categories)
+    <<~JSON_SCHEMA
+      {
+        "title": "The title of the story",
+        "description": "A short description of the story (less than 20 words)",
+        "categories": ["The categories that the story is about"]. Must be one of the following: #{categories.join(', ')},
+        "story": "The story itself (300-500 words)"
+      }
+    JSON_SCHEMA
   end
 
   def self.get_continue_story(original_story)
@@ -46,10 +52,10 @@ module Prompts
       {
           "title": "The title of the story",
           "description": "A short description of the story (less than 20 words)",
-          "story": "The story itself (300-500 words)"
+          "story": "The story itself (1500 to 2000 words)"
       }
     PROMPT
-    [ SYSTEM_PROMPT_TEXT, user_prompt ]
+    [ SYSTEM_PROMPT, user_prompt ]
   end
 
   def self.get_related_stories(original_story, city:, state:, suburb:, categories:)
