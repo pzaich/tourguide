@@ -3,15 +3,20 @@ class Story < ApplicationRecord
 
     has_one_attached :story_audio
 
-    VOICE_ID = "56AoDkrOh6qfVPDXZ7Pt"
+    FEMALE_VOICE_ID = "56AoDkrOh6qfVPDXZ7Pt"
+    MALE_VOICE_ID = "5e3JKXK83vvgQqBcdUol"
 
     def audio_url
       url_for(story_audio) if story_audio.present?
     end
 
+    def pick_voice_id
+      [FEMALE_VOICE_ID, FEMALE_VOICE_ID, FEMALE_VOICE_ID, MALE_VOICE_ID].sample
+    end
+
     def generate_audio!
       client = ElevenLabs::Client.new
-        audio_base64 = client.post("text-to-speech/#{VOICE_ID}", {
+        audio_base64 = client.post("text-to-speech/#{pick_voice_id}", {
             text: body,
             voice_settings: {
                 stability: 0.63,

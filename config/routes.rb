@@ -20,5 +20,6 @@ Rails.application.routes.draw do
     resources :story_recommendations, only: [ :create ]
   end
 
+  post "api/current_location" => "application#current_location"
   get "ping" => "application#ping"
 end
