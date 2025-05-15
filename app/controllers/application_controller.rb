@@ -7,6 +7,12 @@ class ApplicationController < ActionController::Base
 
   def current_location
     @current_location ||= Geocoder.search(params[:coordinates]).first
-    render json: @current_location
+    render json: {
+      city: @current_location.city,
+      county: @current_location.county,
+      state: @current_location.state,
+      categories: @categories,
+      suburb: @current_location.suburb
+    }
   end
 end
