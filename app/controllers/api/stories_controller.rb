@@ -1,10 +1,7 @@
 class Api::StoriesController < ApplicationController
   def index
     location = Geocoder.search(params[:coordinates]).first
-      stories = Story.where(city: location.city, county: location.county, state: location.state)
-      params[:categories].each do |category|
-        stories.where("categories LIKE ?", category)
-      end
+      stories = Story.relevant(location:, categories: params[:categories])
       render json: stories.map { |story| serialize_story(story) }
   end
 
@@ -37,7 +34,8 @@ class Api::StoriesController < ApplicationController
             county: story.county,
             state: story.state,
             categories: story.categories,
-            body: story.body
+            body: story.body,
+            image_url: story.image_url
         }
       end
 end
