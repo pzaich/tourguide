@@ -23,7 +23,7 @@ class GenerateStoriesJob < ApplicationJob
             state: state,
             suburb: location.suburb,
             county: location.county,
-            category: categories
+            category: [ category ]
           )
         end
       rescue => e
