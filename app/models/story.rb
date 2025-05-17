@@ -3,6 +3,7 @@ class Story < ApplicationRecord
 
   scope :relevant, ->(location:, categories: []) do
     where(city: location.city, county: location.county, state: location.state)
+    .or(Story.where(county: location.county, state: location.state))
     .with_categories(categories: categories)
   end
   scope :with_categories, ->(categories: []) do
