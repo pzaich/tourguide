@@ -40,14 +40,14 @@ module Prompts
       The tourists are visiting #{city} in #{county}, #{state}.
 
       Your job hinges on good story telling. Your job is to tell a story using #{title} as the subject.
-      
+
       YThe story should be engaging, informative. Your stories take on the narrative style of
       NPR (National Public Radio). The story should be 1000-1500 words long.
 
       The output should be a valid JSON object containing the following fields:
       #{get_story_recommendations_json_schema(CATEGORIES)}
     PROMPT
-  end 
+  end
 
   def self.get_story_recommendations(city:, suburb:, county:, state:, categories:)
     user_prompt = <<~PROMPT

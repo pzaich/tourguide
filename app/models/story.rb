@@ -19,8 +19,8 @@ class Story < ApplicationRecord
         )
         where trim(both '"' FROM category::text) = ANY(ARRAY[#{psql_array}])
     SQL
-    
-    story_ids = ActiveRecord::Base.connection.execute(ActiveRecord::Base::sanitize_sql(query)).to_a.map { |row| row["id"] }
+
+    story_ids = ActiveRecord::Base.connection.execute(ActiveRecord::Base.sanitize_sql(query)).to_a.map { |row| row["id"] }
     where(id: story_ids)
   end
 

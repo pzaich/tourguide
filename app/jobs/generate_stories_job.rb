@@ -8,17 +8,17 @@ class GenerateStoriesJob < ApplicationJob
       begin
         story_ideas = OpenaiClient.new.chat(
           user_prompt: Prompts.get_story_ideas(
-            city: city, 
-            suburb: location.suburb, 
-            county: location.county, 
-            state: state, 
-          categories: [category]),
+            city: city,
+            suburb: location.suburb,
+            county: location.county,
+            state: state,
+          categories: [ category ]),
           system_prompt: Prompts::SYSTEM_PROMPT,
           model: :gpt_41_nano
         )
-        story_ideas['stories'].each do |story_idea|
+        story_ideas["stories"].each do |story_idea|
           CreateStoryJob.perform_later(
-            title: story_idea,  
+            title: story_idea,
             city: city,
             state: state,
             suburb: location.suburb,

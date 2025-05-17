@@ -5,7 +5,7 @@ namespace :stories do
       { name: "Los Angeles", coordinates: [ "34.0522", "-118.2437" ] },
       { name: "San Diego", coordinates: [ "32.7157", "-117.1611" ] },
       { name: "La Jolla", coordinates: [ "32.8328", "-117.2713" ] },
-      { name: "Long Beach", coordinates: [ "33.7701", "-118.1937" ] } 
+      { name: "Long Beach", coordinates: [ "33.7701", "-118.1937" ] }
     ]
 
     cities.each do |city|
