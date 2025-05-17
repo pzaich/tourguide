@@ -1,14 +1,4 @@
 class StoryRecommendations
-  GPT_41 = "gpt-4.1-2025-04-14"
-  GPT_41_NANO = "gpt-4.1-nano-2025-04-14"
-  SONNET_3_7 = "claude-3-7-sonnet-20250219"
-
-  MODELS = {
-    gpt_41: GPT_41,
-    gpt_41_nano: GPT_41_NANO,
-    sonnet_3_7: SONNET_3_7
-  }.with_indifferent_access
-
   def self.create(categories:, coordinates:, model: :gpt_41_nano)
     new(categories: categories, coordinates: coordinates, model: model).get_stories
   end
@@ -20,7 +10,7 @@ def initialize(categories:, coordinates:, model:)
   end
 
   def client_model
-    MODELS[@model]
+    AI::MODELS[@model]
   end
 
   def openai_client
@@ -28,7 +18,7 @@ def initialize(categories:, coordinates:, model:)
   end
 
   def anthropic_client
-    @anthropic_client ||= Anthropic::Client.new
+    @anthropic_client ||= AnthropicClient.new
   end
 
   def client
@@ -36,7 +26,7 @@ def initialize(categories:, coordinates:, model:)
   end
 
   def anthropic?
-    client_model.match?(SONNET_3_7)
+    client_model.match?(AI::SONNET_3_7)
   end
 
   def chat
@@ -50,47 +40,22 @@ def initialize(categories:, coordinates:, model:)
 
     response = begin
       if anthropic?
-        response = client.messages(
-          parameters: {
-            model: client_model,
-            system: system_prompt,
-            messages: [
-              { "role": "user", "content": user_prompt },
-              { "role": "assistant", "content": "[" }
-            ],
-            max_tokens: 10_000
-          }
-        )
-        content =  JSON.parse("[" + response.dig("content", 0, "text"))
+        client.chat(system_prompt: system_prompt, assistant_prompt: "[", user_prompt: user_prompt)
       else
-        response = client.chat(
-          parameters: {
-            model: client_model,
-            response_format: { type: "json_object" },
-            messages: [
-              { role: "system", content: system_prompt },
-              { role: "user", content: user_prompt }
-            ],
-            temperature: 0.7
-        })
-        content = response.dig("choices", 0, "message", "content")
+        client.chat(system_prompt: system_prompt, user_prompt: user_prompt)
       end
     end
   end
 
   def get_stories
-    max_10 = JSON.parse(chat)["stories"].slice(0, 10)
-    stories = Parallel.map(max_10, in_threads: 3) do |story|
-      Story.create(
-        title: story["title"],
-        description: story["description"],
-        body: story["story"],
+    first_10_story_ideas = chat.slice(0, 10)
+    stories = Parallel.map(first_10_story_ideas, in_threads: 3) do |story_idea|=
+      CreateStoryJob.perform_now(
+        story_idea,
         city: @location.city,
         county: @location.county,
         state: @location.state,
-        suburb: @location.suburb,
-        categories: story["categories"],
-        model: @model
+        suburb: @location.suburb
       )
     end
     stories

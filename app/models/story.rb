@@ -1,24 +1,27 @@
 class Story < ApplicationRecord
   include Rails.application.routes.url_helpers
 
-  scope :relevant, -> (location:, categories: []) do
+  scope :relevant, ->(location:, categories: []) do
     where(city: location.city, county: location.county, state: location.state)
-    .categories(categories: categories)
+    .with_categories(categories: categories)
   end
-  scope :categories, -> (categories: []) do
-    categories.reduce(self) do |stories, category|
-      stories.where(
-        ActiveRecord::Base.sanitize_sql(
-          "
-            EXISTS (
-              SELECT 1
-              FROM json_each(stories.categories)
-              WHERE value in (#{categories.map { |c| "'#{c}'" }.join(",")})
-            )
-          "
+  scope :with_categories, ->(categories: []) do
+    psql_array = categories.map { |c| "'#{c}'" }.join(",")
+    query = <<~SQL
+      select
+        distinct(id)
+        from (
+          select
+            id,
+            title,
+            json_array_elements(stories.categories)::text as category
+          from stories
         )
-      )
-    end
+        where trim(both '"' FROM category::text) = ANY(ARRAY[#{psql_array}])
+    SQL
+    
+    story_ids = ActiveRecord::Base.connection.execute(ActiveRecord::Base::sanitize_sql(query)).to_a.map { |row| row["id"] }
+    where(id: story_ids)
   end
 
     has_one_attached :story_audio
@@ -36,7 +39,7 @@ class Story < ApplicationRecord
     end
 
     def pick_voice_id
-      [FEMALE_VOICE_ID, FEMALE_VOICE_ID, FEMALE_VOICE_ID, MALE_VOICE_ID].sample
+      [ FEMALE_VOICE_ID, FEMALE_VOICE_ID, FEMALE_VOICE_ID, MALE_VOICE_ID ].sample
     end
 
     def generate_audio!
@@ -70,14 +73,14 @@ class Story < ApplicationRecord
           prompt: "Using a 1950s poster style, create a poster based on the following theme. Do not include any text in the image: #{title}",
           model: "gpt-image-1",
           n: 1,
-          size: "1024x1024", 
+          size: "1024x1024",
           quality: "low",
           output_format: "jpeg"
         }
       )
 
-      if response.dig('data',0, 'b64_json').present?
-        image_data = Base64.decode64(response.dig('data',0, 'b64_json'))
+      if response.dig("data", 0, "b64_json").present?
+        image_data = Base64.decode64(response.dig("data", 0, "b64_json"))
         create_temp_file(image_data) do |temp_file|
           self.story_image.attach(
             io: temp_file,
