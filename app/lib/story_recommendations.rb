@@ -10,7 +10,7 @@ def initialize(categories:, coordinates:, model:)
   end
 
   def client_model
-    AI::MODELS[@model]
+    Ai::MODELS[@model]
   end
 
   def openai_client
@@ -26,7 +26,7 @@ def initialize(categories:, coordinates:, model:)
   end
 
   def anthropic?
-    client_model.match?(AI::SONNET_3_7)
+    client_model.match?(Ai::SONNET_3_7)
   end
 
   def chat
@@ -49,7 +49,7 @@ def initialize(categories:, coordinates:, model:)
 
   def get_stories
     first_10_story_ideas = chat.slice(0, 10)
-    stories = Parallel.map(first_10_story_ideas, in_threads: 3) do |story_idea|=
+    stories = Parallel.map(first_10_story_ideas, in_threads: 3) do |story_idea|
       CreateStoryJob.perform_now(
         story_idea,
         city: @location.city,
