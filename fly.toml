@@ -18,6 +18,7 @@ console_command = '/rails/bin/rails console'
 
 [processes]
   app = './bin/rake litestream:run ./bin/rails server'
+  worker = '/.bin/jobs'
 
 [http_service]
   internal_port = 8080
@@ -27,7 +28,14 @@ console_command = '/rails/bin/rails console'
   min_machines_running = 2
   processes = ['app']
 
+[[services]]
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['worker']
+
 [[vm]]
   memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
+
