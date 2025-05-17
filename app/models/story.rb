@@ -24,6 +24,10 @@ class Story < ApplicationRecord
     where(id: story_ids)
   end
 
+  scope :with_attached, -> do
+    includes(:story_audio_attachment, :story_image_attachment)
+  end
+
     has_one_attached :story_audio
     has_one_attached :story_image
 

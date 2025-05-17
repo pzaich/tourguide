@@ -1,7 +1,7 @@
 class Api::StoriesController < ApplicationController
   def index
     location = Geocoder.search(params[:coordinates]).first
-      stories = Story.relevant(location:, categories: params[:categories])
+      stories = Story.relevant(location:, categories: params[:categories]).with_attached
       render json: stories.map { |story| serialize_story(story) }
   end
 
